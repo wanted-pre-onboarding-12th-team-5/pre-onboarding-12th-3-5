@@ -1,22 +1,28 @@
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState, useRef  } from 'react';
 import { HiOutlineSearch } from "react-icons/hi";
 import { finderApi } from "../../apis/finderApi";
+import axios, { CancelTokenSource } from 'axios';
 
 const InputSearch = () => {
-  //FIXME: 하단 useEffect까지는 api호출 확인을 위해 작성 (디바운싱 적용 후 삭제 부탁드려요!)
   const [inputFocus, setInputFocus] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const [recommend, setRecommend] = useState([{ 'sickNm': '검색어 없음', 'sickId': 0 }]);
 
+  const cancelToken = useRef<CancelTokenSource | null>(null);
 
   const inputChangeHandler = async (e: ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value)
-    await finderApi(inputValue)
-  }
 
-  useEffect(() => {
-    console.log(inputValue)
-  }, [inputValue])
+    if (cancelToken.current) {
+      cancelToken.current.cancel();
+    }
+    cancelToken.current = axios.CancelToken.source();
+
+    const recommendations = await finderApi(inputValue, cancelToken.current)
+    if (recommendations) {
+      setRecommend(recommendations);
+    }
+  }
 
   const handleInputFocus = () => {
     setInputFocus(true)
@@ -27,6 +33,7 @@ const InputSearch = () => {
     setInputValue('')
     setRecommend([{ 'sickNm': '검색어 없음', 'sickId': 0 }]);
   }
+  
   return (
     <>
       <input
@@ -48,7 +55,7 @@ const InputSearch = () => {
           {recommend.map((el, idx) => {
             return (
               <div key={idx}>
-                🔍︎ {el.sickNm}
+                <HiOutlineSearch /> {el.sickNm}
               </div>
             )
           })}
