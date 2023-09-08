@@ -58,10 +58,8 @@ const InputSearch = () => {
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'ArrowUp') {
-      if (selected === 0) {
-        setSelected(-1);
+      if (selected > 0) {
         event.preventDefault();
-      } else if (selected > 0) {
         setSelected((prevSelected) => prevSelected - 1);
       }
     } else if (event.key === 'ArrowDown' && selected < recommend.length - 1) {
