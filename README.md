@@ -1,46 +1,97 @@
-# Getting Started with Create React App
+# pre-onboarding-12th-3-5
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+- 검색어 추천 기능과 검색어 캐싱 기능이 있는 검색창을 구현하는 과제입니다.
+- 추천 검색어는 키보드 상하 키로 탐색이 가능해야 합니다.
 
-## Available Scripts
+### 기술 스택
 
-In the project directory, you can run:
+<div>
+  <img src="https://img.shields.io/badge/react-61DAFB?style=flat&logo=react&logoColor=white">
+  <img src="https://img.shields.io/badge/typescript-3178C6?style=flat&logo=typescript&logoColor=white">
+  <img src="https://img.shields.io/badge/sass-DB7093?style=flat&logo=sass&logoColor=white">
+  <img src="https://img.shields.io/badge/axios-5A29E4?style=flat&logo=axios&logoColor=white">
+</div>
 
-### `npm start`
+## 🗓️ 프로젝트 기간
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### 2023.9.5 ~ 2023.9.8 (4일)
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+<br />
 
-### `npm test`
+## 📌 프로젝트 실행 방법
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1. Clone the repo
 
-### `npm run build`
+```javascript
+$ git clone https://github.com/wanted-pre-onboarding-12th-team-5/pre-onboarding-12th-3-5.git
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+2. Install NPM packages
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```javascript
+$ npm install
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+3. Getting Started
 
-### `npm run eject`
+```javascript
+$ npm start
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+<br/>
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## 🚀 배포
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+### [원티드 프리온보딩 인턴십 3차 과제 - 5팀 배포 링크]()
 
-## Learn More
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## ⭐️ 팀 구성원 및 역할
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+|                          최지윤                           |                           유지혜                           |                           김태근                           |                          최선호                           |                          이효식                           |                 김형일(팀장)                 |
+| :-------------------------------------------------------: | :--------------------------------------------------------: | :--------------------------------------------------------: | :-------------------------------------------------------: | :-------------------------------------------------------: | :------------------------------------------: |
+|          [chichoon](https://github.com/chichoon)          |        [dbwlgp1yng](https://github.com/dbwlgp1yng)         |       [taegeun1111](https://github.com/taegeun1111)        |        [preferchoi](https://github.com/preferchoi)        |           [teetee6](https://github.com/teetee6)           | [brother1](https://github.com/brother1-4752) |
+| ![](https://avatars.githubusercontent.com/u/37893979?v=4) | ![](https://avatars.githubusercontent.com/u/126330595?v=4) | ![](https://avatars.githubusercontent.com/u/122959190?v=4) | ![](https://avatars.githubusercontent.com/u/74041004?v=4) | ![](https://avatars.githubusercontent.com/u/17748068?v=4) |            ![](https://avatars.githubusercontent.com/u/60454376?v=4)          |
+|                 디자인 및 README             |              검색어 키보드 탐색 기능            |                            검색어 캐싱 기능                            |         검색 API 호출 횟수 감소 전략               |               프로젝트 배포                         |                프로젝트 셋팅                 |
+
+<br />
+
+
+## [📋 협업 컨벤션](https://www.notion.so/brotherone/5-fd85a49386724f34abe49a309e9b9e3e)
+
+### 1. Husky && lint-staged (commitlint 적용)
+
+### 2. Commit message
+
+| Tag Name | Explanation                                                            |
+| -------- | ---------------------------------------------------------------------- |
+| build    | 시스템 또는 외부 종속성에 영향을 미치는 변경사항 (npm, yarn 레벨)      |
+| chore    | 코드나 기능 변경 없는 단순 수정                                        |
+| docs     | documentation 변경                                                     |
+| feat     | 새로운 기능                                                            |
+| fix      | 버그 수정                                                              |
+| refactor | 버그를 수정하거나 기능을 추가하지 않는 코드 변경, 리팩토링             |
+| style    | 코드 의미에 영향을 주지 않는 변경사항(formatting, colons, white space) |
+
+### 3. Issue && PR 템플릿 통일
+
+### 4. Git-flow branch전략(feat/세부기능 -> develop -> master)
+
+<br />
+
+### 🗂️ 폴더 구조
+
+```
+
+```
+
+
+## 상세 기능 및 구현 방법
+
+### 캐싱
+
+### API 호출 횟수 줄이기 전략
+
+### 키보드로 추천 검색어 이동 기능
+
+
