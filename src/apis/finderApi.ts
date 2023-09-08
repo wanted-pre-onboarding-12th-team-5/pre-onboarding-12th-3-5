@@ -1,7 +1,7 @@
 import { index } from './index';
 import { getCacheData, setCacheData } from '../service/cacheStorage';
 
-export const finder = async (debouncedValue: string) => {
+export const finderApi = async (debouncedValue: string) => {
   try {
     const cachedData = await getCacheData(debouncedValue);
 
