@@ -3,6 +3,11 @@ import { HiOutlineSearch } from "react-icons/hi";
 import { finderApi } from "../../apis/finderApi";
 import axios, { CancelTokenSource } from 'axios';
 
+// const containsOnlyConsonantsOrVowels = (str: string) => {
+//   const regex = /([ㄱ-ㅎ]+|[ㅏ-ㅣ]+)/g;
+//   return regex.test(str);
+// };
+
 const InputSearch = () => {
   const [inputFocus, setInputFocus] = useState(false);
   const [inputValue, setInputValue] = useState('');
@@ -12,17 +17,19 @@ const InputSearch = () => {
 
   const inputChangeHandler = async (e: ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value)
-
+    // if (containsOnlyConsonantsOrVowels(inputValue)) {
     if (cancelToken.current) {
       cancelToken.current.cancel();
     }
     cancelToken.current = axios.CancelToken.source();
-
-    const recommendations = await finderApi(inputValue, cancelToken.current)
+    const recommendations = await finderApi(inputValue, cancelToken.current);
     if (recommendations) {
       setRecommend(recommendations);
     }
-  }
+    // } else {
+    //   setRecommend([{ 'sickNm': '검색어 없음', 'sickId': 0 }]);
+    // }
+  };
 
   const handleInputFocus = () => {
     setInputFocus(true)
