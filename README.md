@@ -82,16 +82,117 @@ $ npm start
 ### 🗂️ 폴더 구조
 
 ```
-
+📦src
+ ┣ 📂components
+ ┃ ┗ 📂InputSearch
+ ┃   ┗ 📜InputSearch.tsx 
+ ┣ 📂constants
+ ┃ ┣ 📜cacheInfo.ts
+ ┃ ┗ 📜apiUrl.ts
+ ┣ 📂apis
+ ┃ ┣ 📜finderApi.ts
+ ┃ ┗ 📜index.ts
+ ┣ 📂service
+ ┃ ┗ 📜cacheStorage.ts
+ ┣ 📂types
+ ┃ ┗ 📜recommend.ts
+ ┣ 📜App.tsx
+ ┗ 📜index.tsx
 ```
 
 
 ## 상세 기능 및 구현 방법
 
-### 캐싱
+### API 호출별 로컬 캐싱 기능 + 검색바 컴포넌트
+
+![Sep-08-2023 20-26-27](https://github.com/wanted-pre-onboarding-12th-team-5/pre-onboarding-12th-3-5/assets/37893979/c2b57fdf-a2ab-40b8-9072-6a9c52d5b40c)
+
+- LocalStorage는 동기식이며 기본 스레드를 차단하므로 사용을 피해야 하고, 약 5MB로 제한되며 문자열만 포함할 수 있지만, Cache Storage API의 경우 많이 저장할 수 있으며 적어도 수백 MB, 경우에 따라 수 GB 이상까지도 될 수 있기 때문에 Cache Storage를 사용했습니다.
+- api를 통해 데이터를 저장할 때 cache storage를 통해 사용할 키와 데이터를 입력받고, 데이터를 캐시에 저장 후 추가로 header에 만료일을 현재 시간에 정해둔 시간을 더해 설정해줘서 api를 호출할 때 특정 키로 저장된 데이터를 확인하고, 데이터가 있다면 그 데이터의 만료일을 현재 시간과 비교한 후 만료 되었다면 해당 키를 자동으로 삭제한 후 데이터를 반환해줍니다.
+
+ <details>
+  <summary>코드보기</summary>
+  ```
+    export const getCacheData = async (debouncedValue: string) => {
+      try {
+        const cacheStorage = await caches.open(CACHE_NAME);
+        const cachedResponse = await cacheStorage.match(debouncedValue);
+        if (cachedResponse) {
+          const expirationTime = Number(cachedResponse.headers.get('Expiration'));
+          if (expirationTime && expirationTime < Date.now()) {
+            await cacheStorage.delete(debouncedValue);
+          }
+          return await cachedResponse.json();
+        } else {
+          return false;
+        }
+      } catch (error) {
+        console.error('Cache Data Error : ', error);
+        return false;
+      }
+    };
+    
+    export const setCacheData = async (debouncedValue: string, response: RecommendType[]) => {
+      if (debouncedValue.length > 0) {
+        const cache = await caches.open(CACHE_NAME);
+        const expirationTime = Date.now() + CACHE_EXPIRATION_TIME;
+        const init = {
+          headers: {
+            'Content-Type': 'application/json',
+            Expiration: expirationTime.toString(),
+          },
+        };
+        const CachedData = new Response(JSON.stringify(response), init);
+        await cache.put(debouncedValue, CachedData);
+      }
+    };
+```
+</details>
+
 
 ### API 호출 횟수 줄이기 전략
 
+```
+useEffect(() => {
+  const timerId = setTimeout(() => {
+    fetchRecommendations();
+  }, 500);
+  return () => {
+    clearTimeout(timerId);
+  };
+}, [inputValue]);
+```
+
+- 캐시 스토리지를 이용하여 캐시를 저장하는 방식으로 호출을 줄일 수 있었고, debouncing 을 사용하여 입력값이 변할 때마다 API를 호출하는 것이 아닌, 일정 시간이 지난 후 단 한 번만 API를 호출할 수 있도록 하였습니다.
+- Debouncing은 `useEffect` 내부에서 `setTimeout`을 걸고, 이벤트가 발생할 때마다 `clearTimeout` 을 발동하여 이전 이벤트가 지워지도록 하는 기법입니다.
+
 ### 키보드로 추천 검색어 이동 기능
 
+![Sep-08-2023 20-34-10](https://github.com/wanted-pre-onboarding-12th-team-5/pre-onboarding-12th-3-5/assets/37893979/e21d8b8e-f1ad-4088-a1ad-136e561bbed9)
 
+```
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'ArrowUp') {
+      if (selected > 0) {
+        event.preventDefault();
+        setSelected((prevSelected) => prevSelected - 1);
+      }
+    } else if (event.key === 'ArrowDown' && selected < recommend.length - 1) {
+      event.preventDefault();
+      setSelected((prevSelected) => prevSelected + 1);
+    }
+  };
+```
+
+- input 태그에 keyDown 이벤트를 설정하여 상하 버튼이 눌릴 때마다 인덱스를 변화시켜 주는 방식으로 추천 검색어 이동 기능을 구현하였습니다.
+
+```
+  useEffect(() => {
+    const selectedElement = document.querySelector('.selected');
+    if (selectedElement) {
+      selectedElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, [selected]);
+```
+
+- scrollIntoView 를 이용하여 스크롤이 같이 내려가거나 올라갈 수 있도록 구현하였습니다.
