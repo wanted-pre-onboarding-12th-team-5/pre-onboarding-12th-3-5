@@ -12,23 +12,40 @@ const InputSearch = () => {
   const [inputFocus, setInputFocus] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const [recommend, setRecommend] = useState([{ 'sickNm': '검색어 없음', 'sickId': 0 }]);
+  const [debouncedValue, setDebouncedValue] = useState(inputValue);
 
   const cancelToken = useRef<CancelTokenSource | null>(null);
 
+  useEffect(() => {
+    const fetchRecommendations = async () => {
+      if (!containsOnlyConsonantsOrVowels(debouncedValue)) {
+        if (cancelToken.current) {
+          cancelToken.current.cancel();
+        }
+        cancelToken.current = axios.CancelToken.source();
+        const recommendations = await finderApi(debouncedValue, cancelToken.current);
+        if (recommendations) {
+          setRecommend(recommendations);
+        }
+      } else {
+        setRecommend([{ 'sickNm': '검색어 없음', 'sickId': 0 }]);
+      }
+    };
+
+    fetchRecommendations();
+  }, [debouncedValue]);
+
+  useEffect(() => {
+    const timerId = setTimeout(() => {
+      setDebouncedValue(inputValue);
+    }, 500);
+    return () => {
+      clearTimeout(timerId);
+    };
+  }, [inputValue]);
+
   const inputChangeHandler = async (e: ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value)
-    if (!containsOnlyConsonantsOrVowels(inputValue)) {
-      if (cancelToken.current) {
-        cancelToken.current.cancel();
-      }
-      cancelToken.current = axios.CancelToken.source();
-      const recommendations = await finderApi(inputValue, cancelToken.current);
-      if (recommendations) {
-        setRecommend(recommendations);
-      }
-    } else {
-      setRecommend([{ 'sickNm': '검색어 없음', 'sickId': 0 }]);
-    }
   };
 
   const handleInputFocus = () => {
