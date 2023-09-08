@@ -78,6 +78,17 @@ const InputSearch = () => {
     }
   };  
   
+  const scrollToSelected = () => {
+    const selectedElement = document.querySelector(".selected");
+    if (selectedElement) {
+      selectedElement.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  };
+
+  useEffect(() => {
+    scrollToSelected();
+  }, [selected]);
+  
   return (
     <>
       <input
