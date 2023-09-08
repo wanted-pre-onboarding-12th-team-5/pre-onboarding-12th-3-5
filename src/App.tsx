@@ -1,5 +1,7 @@
+import InputSearch from "./components/inputSearch/InputSearch";
+
 function App() {
-  return <div>APP</div>;
+  return <div><InputSearch /></div>;
 }
 
 export default App;
