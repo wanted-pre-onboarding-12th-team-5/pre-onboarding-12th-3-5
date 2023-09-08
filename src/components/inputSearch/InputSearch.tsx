@@ -1,5 +1,11 @@
 import axios, { CancelTokenSource } from 'axios';
-import React, { ChangeEvent, useEffect, useState, useRef } from 'react';
+import React, {
+  ChangeEvent,
+  useEffect,
+  useState,
+  useRef,
+  FormEvent,
+} from 'react';
 
 import { HiOutlineSearch } from 'react-icons/hi';
 import { finderApi } from '../../apis/finderApi';
@@ -21,25 +27,25 @@ const InputSearch = () => {
 
   const cancelToken = useRef<CancelTokenSource | null>(null);
 
-  useEffect(() => {
-    const fetchRecommendations = async () => {
-      if (!containsOnlyConsonantsOrVowels(debouncedValue)) {
-        if (cancelToken.current) {
-          cancelToken.current.cancel();
-        }
-        cancelToken.current = axios.CancelToken.source();
-        const recommendations = await finderApi(
-          debouncedValue,
-          cancelToken.current
-        );
-        if (recommendations) {
-          setRecommend(recommendations);
-        }
-      } else {
-        setRecommend([{ sickNm: '검색어 없음', sickId: 0 }]);
+  const fetchRecommendations = async () => {
+    if (!containsOnlyConsonantsOrVowels(debouncedValue)) {
+      if (cancelToken.current) {
+        cancelToken.current.cancel();
       }
-    };
+      cancelToken.current = axios.CancelToken.source();
+      const recommendations = await finderApi(
+        debouncedValue,
+        cancelToken.current
+      );
+      if (recommendations) {
+        setRecommend(recommendations);
+      }
+    } else {
+      setRecommend([{ sickNm: '검색어 없음', sickId: 0 }]);
+    }
+  };
 
+  useEffect(() => {
     fetchRecommendations();
   }, [debouncedValue]);
 
@@ -66,12 +72,17 @@ const InputSearch = () => {
     setRecommend([{ sickNm: '검색어 없음', sickId: 0 }]);
   };
 
+  const handleInputSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    fetchRecommendations();
+  };
+
   return (
     <div className={styles.wrapper}>
       <header className={styles.header}>
         <h1>{`국내 모든 임상시험 검색하고\n온라인으로 참여하기`}</h1>
       </header>
-      <div className={styles.searchBarWrapper}>
+      <form onSubmit={handleInputSubmit} className={styles.searchBarWrapper}>
         <HiOutlineSearch />
         <input
           type="text"
@@ -82,10 +93,10 @@ const InputSearch = () => {
           onFocus={handleInputFocus}
           // onBlur={handleInputBlur}
         />
-        <button type="button" className={styles.searchButton}>
+        <button type="submit" className={styles.searchButton}>
           <span>검색</span>
         </button>
-      </div>
+      </form>
 
       {inputFocus && (
         <ul>
