@@ -91,20 +91,19 @@ const InputSearch = () => {
           className="search-input"
           onChange={inputChangeHandler}
           onFocus={handleInputFocus}
-          // onBlur={handleInputBlur}
+          onBlur={handleInputBlur}
         />
         <button type="submit" className={styles.searchButton}>
           <span>검색</span>
         </button>
       </form>
-
       {inputFocus && (
-        <ul>
+        <ul className={styles.resultWrapper}>
           <span>추천 검색어</span>
-          {recommend.map((el, idx) => {
+          {recommend.map((item, idx) => {
             return (
-              <li key={idx}>
-                <HiOutlineSearch /> {el.sickNm}
+              <li key={item.sickId} className={styles.innerElement}>
+                <HiOutlineSearch /> {item.sickNm}
               </li>
             );
           })}
