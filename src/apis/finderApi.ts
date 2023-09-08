@@ -4,7 +4,6 @@ import { getCacheData, setCacheData } from '../service/cacheStorage';
 export const finderApi = async (debouncedValue: string) => {
   try {
     const cachedData = await getCacheData(debouncedValue);
-
     if (cachedData) {
       return cachedData;
     } else if (!cachedData || debouncedValue.length > 0) {

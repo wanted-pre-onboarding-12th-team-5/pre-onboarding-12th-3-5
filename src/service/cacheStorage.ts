@@ -1,4 +1,4 @@
-import {CACHE_EXPIRATION_TIME, CACHE_NAME, EXPIRATION_NAME} from "../constants/cacheInfo";
+import {CACHE_EXPIRATION_TIME, CACHE_NAME} from "../constants/cacheInfo";
 import {RecommendType} from "../types/recommend";
 
 export const getCacheData = async (debouncedValue: string) => {
@@ -7,7 +7,7 @@ export const getCacheData = async (debouncedValue: string) => {
     const cachedResponse = await cacheStorage.match(debouncedValue);
 
     if (cachedResponse) {
-      const expirationTime = Number(cachedResponse.headers.get(EXPIRATION_NAME));
+      const expirationTime = Number(cachedResponse.headers.get('Expiration'));
       if (expirationTime && expirationTime < Date.now()) {
         await cacheStorage.delete(debouncedValue);
       }
@@ -29,7 +29,7 @@ export const setCacheData = async (debouncedValue: string, response: RecommendTy
     const init = {
       headers: {
         'Content-Type': 'application/json',
-        EXPIRATION_NAME: expirationTime.toString(),
+        Expiration: expirationTime.toString(),
       },
     };
 
