@@ -46,19 +46,6 @@ const InputSearch = () => {
     }
   };
 
-  useEffect(() => {
-    fetchRecommendations();
-  }, [debouncedValue]);
-
-  useEffect(() => {
-    const timerId = setTimeout(() => {
-      setDebouncedValue(inputValue);
-    }, 500);
-    return () => {
-      clearTimeout(timerId);
-    };
-  }, [inputValue]);
-
   const inputChangeHandler = async (e: ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
   };
@@ -84,28 +71,33 @@ const InputSearch = () => {
     } else if (event.key === 'ArrowDown' && selected < recommend.length - 1) {
       event.preventDefault();
       setSelected((prevSelected) => prevSelected + 1);
-    } else if (event.key === 'Enter' && selected !== -1) {
-      event.preventDefault();
-      setInputValue(recommend[selected].sickNm);
-      setSelected(-1);
     }
   };
-
-  const scrollToSelected = () => {
-    const selectedElement = document.querySelector('.selected');
-    if (selectedElement) {
-      selectedElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-  };
-
-  useEffect(() => {
-    scrollToSelected();
-  }, [selected]);
 
   const handleInputSubmit = (e: FormEvent) => {
     e.preventDefault();
     fetchRecommendations();
   };
+
+  useEffect(() => {
+    fetchRecommendations();
+  }, [debouncedValue]);
+
+  useEffect(() => {
+    const timerId = setTimeout(() => {
+      setDebouncedValue(inputValue);
+    }, 500);
+    return () => {
+      clearTimeout(timerId);
+    };
+  }, [inputValue]);
+
+  useEffect(() => {
+    const selectedElement = document.querySelector('.selected');
+    if (selectedElement) {
+      selectedElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, [selected]);
 
   return (
     <div className={styles.wrapper}>
@@ -122,6 +114,7 @@ const InputSearch = () => {
           onChange={inputChangeHandler}
           onFocus={handleInputFocus}
           onBlur={handleInputBlur}
+          onKeyDown={handleKeyDown}
         />
         <button type="submit" className={styles.searchButton}>
           <span>검색</span>
@@ -132,8 +125,13 @@ const InputSearch = () => {
           <span>추천 검색어</span>
           {recommend.map((item, idx) => {
             return (
-              <li key={item.sickId} className={styles.innerElement}>
-                <HiOutlineSearch /> {item.sickNm}
+              <li
+                key={`${idx}-${item.sickId}`}
+                className={`${selected === idx ? styles.selected : ''} ${
+                  styles.innerElement
+                }`}>
+                <HiOutlineSearch />
+                <span>{item.sickNm}</span>
               </li>
             );
           })}
