@@ -6,8 +6,8 @@ import React, {
   useRef,
   FormEvent,
 } from 'react';
-
 import { HiOutlineSearch } from 'react-icons/hi';
+
 import { finderApi } from '../../apis/finderApi';
 
 import styles from './InputSearch.module.scss';
@@ -24,6 +24,7 @@ const InputSearch = () => {
     { sickNm: '검색어 없음', sickId: 0 },
   ]);
   const [debouncedValue, setDebouncedValue] = useState(inputValue);
+  const [selected, setSelected] = useState(-1);
 
   const cancelToken = useRef<CancelTokenSource | null>(null);
 
@@ -71,6 +72,35 @@ const InputSearch = () => {
     setInputValue('');
     setRecommend([{ sickNm: '검색어 없음', sickId: 0 }]);
   };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'ArrowUp') {
+      if (selected === 0) {
+        setSelected(-1);
+        event.preventDefault();
+      } else if (selected > 0) {
+        setSelected((prevSelected) => prevSelected - 1);
+      }
+    } else if (event.key === 'ArrowDown' && selected < recommend.length - 1) {
+      event.preventDefault();
+      setSelected((prevSelected) => prevSelected + 1);
+    } else if (event.key === 'Enter' && selected !== -1) {
+      event.preventDefault();
+      setInputValue(recommend[selected].sickNm);
+      setSelected(-1);
+    }
+  };
+
+  const scrollToSelected = () => {
+    const selectedElement = document.querySelector('.selected');
+    if (selectedElement) {
+      selectedElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  };
+
+  useEffect(() => {
+    scrollToSelected();
+  }, [selected]);
 
   const handleInputSubmit = (e: FormEvent) => {
     e.preventDefault();
