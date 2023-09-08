@@ -2,6 +2,7 @@ import React, { ChangeEvent, useEffect, useState, useRef  } from 'react';
 import { HiOutlineSearch } from "react-icons/hi";
 import { finderApi } from "../../apis/finderApi";
 import axios, { CancelTokenSource } from 'axios';
+import styled from 'styled-components';
 
 const containsOnlyConsonantsOrVowels = (str: string) => {
   const regex = /([ㄱ-ㅎ]+|[ㅏ-ㅣ]+)/g;
@@ -11,8 +12,9 @@ const containsOnlyConsonantsOrVowels = (str: string) => {
 const InputSearch = () => {
   const [inputFocus, setInputFocus] = useState(false);
   const [inputValue, setInputValue] = useState('');
-  const [recommend, setRecommend] = useState([{ 'sickNm': '검색어 없음', 'sickId': 0 }]);
+  const [recommend, setRecommend] = useState([{ 'sickNm': '검색어 없음', 'sickId': 0 }]); //처음 인덱스 길이 1
   const [debouncedValue, setDebouncedValue] = useState(inputValue);
+  const [selected, setSelected] = useState(-1);
 
   const cancelToken = useRef<CancelTokenSource | null>(null);
 
@@ -57,6 +59,35 @@ const InputSearch = () => {
     setInputValue('')
     setRecommend([{ 'sickNm': '검색어 없음', 'sickId': 0 }]);
   }
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'ArrowUp') {
+      if (selected === 0 ) {
+        setSelected(-1);
+        event.preventDefault();
+      } else if (selected > 0) {
+        setSelected((prevSelected) => prevSelected - 1);
+      }
+    } else if (event.key === 'ArrowDown' && selected < recommend.length - 1) {
+      event.preventDefault();
+      setSelected((prevSelected) => prevSelected + 1);
+    } else if (event.key === 'Enter' && selected !== -1) {
+      event.preventDefault();
+      setInputValue(recommend[selected].sickNm);
+      setSelected(-1);
+    }
+  };  
+  
+  const scrollToSelected = () => {
+    const selectedElement = document.querySelector(".selected");
+    if (selectedElement) {
+      selectedElement.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  };
+
+  useEffect(() => {
+    scrollToSelected();
+  }, [selected]);
   
   return (
     <>
@@ -68,6 +99,7 @@ const InputSearch = () => {
         onChange={inputChangeHandler}
         onFocus={handleInputFocus}
         onBlur={handleInputBlur}
+        onKeyDown={handleKeyDown}
       />
       <button type='button' className='search-btn'>
         <HiOutlineSearch />
@@ -78,9 +110,12 @@ const InputSearch = () => {
           <p>추천 검색어</p>
           {recommend.map((el, idx) => {
             return (
-              <div key={idx}>
+              <StyledList 
+                key={idx}
+                className={selected === idx ? 'selected' : ''}
+              >
                 <HiOutlineSearch /> {el.sickNm}
-              </div>
+              </StyledList>
             )
           })}
         </div>
@@ -90,3 +125,11 @@ const InputSearch = () => {
 };
 
 export default InputSearch;
+
+// 테스트 디자인 : 작업하실 때 지워주세요 !
+const StyledList = styled.div`
+  background-color: beige;
+  &.selected {
+    background-color: aqua;
+  }
+`;
