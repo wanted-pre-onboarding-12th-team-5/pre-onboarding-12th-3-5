@@ -11,10 +11,10 @@
     "axios": "^1.4.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-icons": "^4.11.0",
     "react-router-dom": "^6.15.0",
     "react-scripts": "5.0.1",
-    "styled-components": "^6.0.7",
-    "styled-reset": "^4.5.1"
+    "sass": "^1.66.1"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -23,7 +23,8 @@
     "eject": "react-scripts eject",
     "prepare": "husky install",
     "format": "prettier --write --cache .",
-    "lint": "eslint --quiet --fix --cache ."
+    "lint": "eslint --quiet --fix --cache .",
+    "deploy": "npm run build &&  aws s3 sync build/ s3://preonboarding-week3-team --delete"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
