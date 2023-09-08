@@ -80,7 +80,7 @@ const InputSearch = () => {
     return () => {
       clearTimeout(timerId);
     };
-  }, [inputValue]);
+  }, [inputValue, fetchRecommendations]);
 
   useEffect(() => {
     const selectedElement = document.querySelector('.selected');
