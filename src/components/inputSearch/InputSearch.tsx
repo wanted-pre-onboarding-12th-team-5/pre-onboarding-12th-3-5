@@ -23,21 +23,17 @@ const InputSearch = () => {
   const [recommend, setRecommend] = useState([
     { sickNm: '검색어 없음', sickId: 0 },
   ]);
-  const [debouncedValue, setDebouncedValue] = useState(inputValue);
   const [selected, setSelected] = useState(-1);
 
   const cancelToken = useRef<CancelTokenSource | null>(null);
 
   const fetchRecommendations = async () => {
-    if (!containsOnlyConsonantsOrVowels(debouncedValue)) {
+    if (!containsOnlyConsonantsOrVowels(inputValue)) {
       if (cancelToken.current) {
         cancelToken.current.cancel();
       }
       cancelToken.current = axios.CancelToken.source();
-      const recommendations = await finderApi(
-        debouncedValue,
-        cancelToken.current
-      );
+      const recommendations = await finderApi(inputValue, cancelToken.current);
       if (recommendations) {
         setRecommend(recommendations);
       }
@@ -80,12 +76,8 @@ const InputSearch = () => {
   };
 
   useEffect(() => {
-    fetchRecommendations();
-  }, [debouncedValue]);
-
-  useEffect(() => {
     const timerId = setTimeout(() => {
-      setDebouncedValue(inputValue);
+      fetchRecommendations();
     }, 500);
     return () => {
       clearTimeout(timerId);
