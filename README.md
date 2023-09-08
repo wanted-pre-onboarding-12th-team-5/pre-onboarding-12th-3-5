@@ -110,9 +110,11 @@ $ npm start
 - LocalStorage는 동기식이며 기본 스레드를 차단하므로 사용을 피해야 하고, 약 5MB로 제한되며 문자열만 포함할 수 있지만, Cache Storage API의 경우 많이 저장할 수 있으며 적어도 수백 MB, 경우에 따라 수 GB 이상까지도 될 수 있기 때문에 Cache Storage를 사용했습니다.
 - api를 통해 데이터를 저장할 때 cache storage를 통해 사용할 키와 데이터를 입력받고, 데이터를 캐시에 저장 후 추가로 header에 만료일을 현재 시간에 정해둔 시간을 더해 설정해줘서 api를 호출할 때 특정 키로 저장된 데이터를 확인하고, 데이터가 있다면 그 데이터의 만료일을 현재 시간과 비교한 후 만료 되었다면 해당 키를 자동으로 삭제한 후 데이터를 반환해줍니다.
 
- <details>
-  <summary>코드보기</summary>
-  ```
+<details>
+  
+<summary>코드보기</summary>
+  
+```ts
     export const getCacheData = async (debouncedValue: string) => {
       try {
         const cacheStorage = await caches.open(CACHE_NAME);
@@ -147,12 +149,13 @@ $ npm start
       }
     };
 ```
-</details>
 
+</details>
+</br>
 
 ### API 호출 횟수 줄이기 전략
 
-```
+```ts
 useEffect(() => {
   const timerId = setTimeout(() => {
     fetchRecommendations();
@@ -170,7 +173,7 @@ useEffect(() => {
 
 ![Sep-08-2023 20-34-10](https://github.com/wanted-pre-onboarding-12th-team-5/pre-onboarding-12th-3-5/assets/37893979/e21d8b8e-f1ad-4088-a1ad-136e561bbed9)
 
-```
+```ts
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'ArrowUp') {
       if (selected > 0) {
@@ -186,7 +189,7 @@ useEffect(() => {
 
 - input 태그에 keyDown 이벤트를 설정하여 상하 버튼이 눌릴 때마다 인덱스를 변화시켜 주는 방식으로 추천 검색어 이동 기능을 구현하였습니다.
 
-```
+```ts
   useEffect(() => {
     const selectedElement = document.querySelector('.selected');
     if (selectedElement) {
